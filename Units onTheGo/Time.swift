@@ -1,57 +1,27 @@
 //
-//  ContentView.swift
+//  Time.swift
 //  Units onTheGo
 //
 //  Created by Parth Antala on 2024-07-05.
 //
 
 import SwiftUI
-
-enum Temp: String, CaseIterable, Identifiable {
-    case Celsius = "Celsius"
-    case Fahrenheit = "Fahrenheit"
-    case Kelvin = "Kelvin"
-    
+enum TimeUnits: String, CaseIterable, Identifiable {
+    case seconds = "seconds"
+    case minutes = "minutes"
+    case hours = "hours"
+    case days = "days"
     var id: Self { self }
 }
 
-struct ContentView: View {
-    
-    @State private var isFavorite = false
-    
-    
-    var body: some View {
-        TabView {
-         TempView()
-                .tabItem {
-                    Label("Temp", systemImage: "thermometer.low" )
-                }
-            
-            Distance()
-                .tabItem{
-                    Label("Length", systemImage: "ruler.fill")
-                }
-            
-            Time()
-                .tabItem {
-                    Label("Time", systemImage: "clock.circle")
-                }
-            
-            Volume()
-                .tabItem {
-                    Label("Volume", systemImage: "drop.degreesign.fill")
-                        
-                }
-        }
-        .background(.green)
-                
-    }
-}
+// Conversion factors
+let secondsToMinutes = 1.0 / 60.0
+let secondsToHours = 1.0 / 3600.0
+let secondsToDays = 1.0 / 86400.0
 
-
-struct TempView: View {
-    @State private var selectedInputTemp: Temp = Temp.Celsius
-    @State private var selectedOutputTemp: Temp = Temp.Celsius
+struct Time: View {
+    @State private var selectedInputTime: TimeUnits = TimeUnits.days
+    @State private var selectedOutputTime: TimeUnits = TimeUnits.days
     
     @State private var input: Double = 0
     @State private var output: Double = 0
@@ -73,7 +43,7 @@ struct TempView: View {
                         } label: {
                             Image(systemName: "minus.circle")
                                 .font(.system(size: 42, weight: .heavy))
-                                .foregroundColor(.purple.opacity(0.7))
+                                .foregroundColor(.green.opacity(0.7))
                         }
                         TextField("Value", value: $input, format: .number)
                             .multilineTextAlignment(.center)
@@ -87,14 +57,14 @@ struct TempView: View {
                         } label: {
                             Image(systemName: "plus.circle")
                                 .font(.system(size: 42, weight: .heavy))
-                                .foregroundColor(.purple.opacity(0.7))
+                                .foregroundColor(.green.opacity(0.7))
                         }
                     }
                         
                 }
                 
-                Picker("temprature", selection: $selectedInputTemp) {
-                    ForEach(Temp.allCases, id: \.self) { temp in
+                Picker("temprature", selection: $selectedInputTime) {
+                    ForEach(TimeUnits.allCases, id: \.self) { temp in
                         Text(temp.rawValue)
                     }
                 }
@@ -108,8 +78,8 @@ struct TempView: View {
                     [0, 1], [0.5, 1], [1, 1]
                 ], colors: [
                     .white, .white, .white,
-                    .white, .white, .purple,
-                    .indigo, .indigo, .pink
+                    .white, .white, .mint,
+                    .teal, .teal, .green
                 ])
                 .ignoresSafeArea()
             )
@@ -121,23 +91,23 @@ struct TempView: View {
                 
                     
                     
-                    Picker("temprature", selection: $selectedOutputTemp) {
-                        ForEach(Temp.allCases, id: \.self) { temp in
+                Picker("temprature", selection: $selectedOutputTime) {
+                    ForEach(TimeUnits.allCases, id: \.self) { temp in
                             Text(temp.rawValue)
                         }
                     }
                     .pickerStyle(.segmented)
-                    var out = convert(input: input, inUnit: selectedInputTemp, outUnit: selectedOutputTemp)
+                var out = convertTime(value: input, fromUnit: selectedInputTime.rawValue, toUnit: selectedOutputTime.rawValue)
                 
                 ZStack {
                     RoundedRectangle(cornerRadius: 20)
-                        .fill(.purple)
+                        .fill(.cyan)
                         .opacity(0.4)
                         .shadow(radius: 10)
                         .frame(width: 350)
                         .padding()
                     
-                    let formattedValue = String(format: "%.2f", out)
+                    let formattedValue = String(format: "%.0f", out)
                     
                     Text("\(formattedValue)")
                         .font(.system(size: 70))
@@ -151,45 +121,50 @@ struct TempView: View {
                     [0, 0.5], [0.5, 0.5], [1, 0.5],
                     [0, 1], [0.5, 1], [1, 1]
                 ], colors: [
-                    .indigo, .indigo, .pink,
-                    .white, .white, .purple,
+                    .teal, .teal, .green,
+                    .white, .white, .mint,
                     .white, .white, .white
                 ])
                 .ignoresSafeArea()
             )
         }
-        
     }
 }
 
-struct OutputView: View {
-    var body: some View {
-        /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Hello, world!@*/Text("Hello, world!")/*@END_MENU_TOKEN@*/
+func convertTime(value: Double, fromUnit: String, toUnit: String) -> Double {
+    var valueInSeconds: Double = value
+    
+    // Convert input to seconds
+    switch fromUnit.lowercased() {
+    case "minutes":
+        valueInSeconds = value / secondsToMinutes
+    case "hours":
+        valueInSeconds = value / secondsToHours
+    case "days":
+        valueInSeconds = value / secondsToDays
+    case "seconds":
+        break
+    default:
+        print("Invalid from unit")
+        return 0.0
+    }
+    
+    // Convert seconds to target unit
+    switch toUnit.lowercased() {
+    case "minutes":
+        return valueInSeconds * secondsToMinutes
+    case "hours":
+        return valueInSeconds * secondsToHours
+    case "days":
+        return valueInSeconds * secondsToDays
+    case "seconds":
+        return valueInSeconds
+    default:
+        print("Invalid to unit")
+        return 0.0
     }
 }
-
-
-func convert(input: Double, inUnit: Temp, outUnit: Temp) -> Double {
-    switch (inUnit, outUnit) {
-        case (.Celsius, .Fahrenheit):
-            return (input * 9/5) + 32
-        case (.Celsius, .Kelvin):
-            return input + 273.15
-        case (.Fahrenheit, .Celsius):
-            return (input - 32) * 5/9
-        case (.Fahrenheit, .Kelvin):
-            return (input - 32) * 5/9 + 273.15
-        case (.Kelvin, .Celsius):
-            return input - 273.15
-        case (.Kelvin, .Fahrenheit):
-            return (input - 273.15) * 9/5 + 32
-        case (_, _):
-            return input
-        }
-}
-
-
 
 #Preview {
-    ContentView()
+    Time()
 }

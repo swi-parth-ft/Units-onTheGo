@@ -1,57 +1,29 @@
 //
-//  ContentView.swift
+//  Volume.swift
 //  Units onTheGo
 //
 //  Created by Parth Antala on 2024-07-05.
 //
 
 import SwiftUI
-
-enum Temp: String, CaseIterable, Identifiable {
-    case Celsius = "Celsius"
-    case Fahrenheit = "Fahrenheit"
-    case Kelvin = "Kelvin"
-    
+enum Vols: String, CaseIterable, Identifiable {
+    case milliliters = "milliliters"
+    case liters = "liters"
+    case cups = "cups"
+    case pints = "pints"
+    case gallons = "gallons"
     var id: Self { self }
 }
 
-struct ContentView: View {
-    
-    @State private var isFavorite = false
-    
-    
-    var body: some View {
-        TabView {
-         TempView()
-                .tabItem {
-                    Label("Temp", systemImage: "thermometer.low" )
-                }
-            
-            Distance()
-                .tabItem{
-                    Label("Length", systemImage: "ruler.fill")
-                }
-            
-            Time()
-                .tabItem {
-                    Label("Time", systemImage: "clock.circle")
-                }
-            
-            Volume()
-                .tabItem {
-                    Label("Volume", systemImage: "drop.degreesign.fill")
-                        
-                }
-        }
-        .background(.green)
-                
-    }
-}
+// Conversion factors
+let millilitersToLiters = 0.001
+let millilitersToCups = 0.00422675
+let millilitersToPints = 0.00211338
+let millilitersToGallons = 0.000264172
 
-
-struct TempView: View {
-    @State private var selectedInputTemp: Temp = Temp.Celsius
-    @State private var selectedOutputTemp: Temp = Temp.Celsius
+struct Volume: View {
+    @State private var selectedInputVol: Vols = Vols.cups
+    @State private var selectedOutputVol: Vols = Vols.cups
     
     @State private var input: Double = 0
     @State private var output: Double = 0
@@ -73,7 +45,7 @@ struct TempView: View {
                         } label: {
                             Image(systemName: "minus.circle")
                                 .font(.system(size: 42, weight: .heavy))
-                                .foregroundColor(.purple.opacity(0.7))
+                                .foregroundColor(.orange.opacity(0.7))
                         }
                         TextField("Value", value: $input, format: .number)
                             .multilineTextAlignment(.center)
@@ -87,14 +59,14 @@ struct TempView: View {
                         } label: {
                             Image(systemName: "plus.circle")
                                 .font(.system(size: 42, weight: .heavy))
-                                .foregroundColor(.purple.opacity(0.7))
+                                .foregroundColor(.orange.opacity(0.7))
                         }
                     }
                         
                 }
                 
-                Picker("temprature", selection: $selectedInputTemp) {
-                    ForEach(Temp.allCases, id: \.self) { temp in
+                Picker("temprature", selection: $selectedInputVol) {
+                    ForEach(Vols.allCases, id: \.self) { temp in
                         Text(temp.rawValue)
                     }
                 }
@@ -108,8 +80,8 @@ struct TempView: View {
                     [0, 1], [0.5, 1], [1, 1]
                 ], colors: [
                     .white, .white, .white,
-                    .white, .white, .purple,
-                    .indigo, .indigo, .pink
+                    .white, .white, .yellow,
+                    .orange, .orange, .red
                 ])
                 .ignoresSafeArea()
             )
@@ -121,17 +93,17 @@ struct TempView: View {
                 
                     
                     
-                    Picker("temprature", selection: $selectedOutputTemp) {
-                        ForEach(Temp.allCases, id: \.self) { temp in
+                Picker("temprature", selection: $selectedOutputVol) {
+                    ForEach(Vols.allCases, id: \.self) { temp in
                             Text(temp.rawValue)
                         }
                     }
                     .pickerStyle(.segmented)
-                    var out = convert(input: input, inUnit: selectedInputTemp, outUnit: selectedOutputTemp)
+                var out = convertVolume(value: input, fromUnit: selectedInputVol.rawValue, toUnit: selectedOutputVol.rawValue)
                 
                 ZStack {
                     RoundedRectangle(cornerRadius: 20)
-                        .fill(.purple)
+                        .fill(.orange)
                         .opacity(0.4)
                         .shadow(radius: 10)
                         .frame(width: 350)
@@ -151,45 +123,54 @@ struct TempView: View {
                     [0, 0.5], [0.5, 0.5], [1, 0.5],
                     [0, 1], [0.5, 1], [1, 1]
                 ], colors: [
-                    .indigo, .indigo, .pink,
-                    .white, .white, .purple,
-                    .white, .white, .white
+                    .orange, .orange, .red,
+                    .white, .white, .white,
+                    .yellow, .white, .white
                 ])
                 .ignoresSafeArea()
             )
         }
-        
     }
 }
 
-struct OutputView: View {
-    var body: some View {
-        /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Hello, world!@*/Text("Hello, world!")/*@END_MENU_TOKEN@*/
+func convertVolume(value: Double, fromUnit: String, toUnit: String) -> Double {
+    var valueInMilliliters: Double = value
+    
+    // Convert input to milliliters
+    switch fromUnit.lowercased() {
+    case "liters":
+        valueInMilliliters = value / millilitersToLiters
+    case "cups":
+        valueInMilliliters = value / millilitersToCups
+    case "pints":
+        valueInMilliliters = value / millilitersToPints
+    case "gallons":
+        valueInMilliliters = value / millilitersToGallons
+    case "milliliters":
+        break
+    default:
+        print("Invalid from unit")
+        return 0.0
+    }
+    
+    // Convert milliliters to target unit
+    switch toUnit.lowercased() {
+    case "liters":
+        return valueInMilliliters * millilitersToLiters
+    case "cups":
+        return valueInMilliliters * millilitersToCups
+    case "pints":
+        return valueInMilliliters * millilitersToPints
+    case "gallons":
+        return valueInMilliliters * millilitersToGallons
+    case "milliliters":
+        return valueInMilliliters
+    default:
+        print("Invalid to unit")
+        return 0.0
     }
 }
-
-
-func convert(input: Double, inUnit: Temp, outUnit: Temp) -> Double {
-    switch (inUnit, outUnit) {
-        case (.Celsius, .Fahrenheit):
-            return (input * 9/5) + 32
-        case (.Celsius, .Kelvin):
-            return input + 273.15
-        case (.Fahrenheit, .Celsius):
-            return (input - 32) * 5/9
-        case (.Fahrenheit, .Kelvin):
-            return (input - 32) * 5/9 + 273.15
-        case (.Kelvin, .Celsius):
-            return input - 273.15
-        case (.Kelvin, .Fahrenheit):
-            return (input - 273.15) * 9/5 + 32
-        case (_, _):
-            return input
-        }
-}
-
-
 
 #Preview {
-    ContentView()
+    Volume()
 }

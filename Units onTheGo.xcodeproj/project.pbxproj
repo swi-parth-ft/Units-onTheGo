@@ -11,6 +11,9 @@
 		07650A452C38C50000A2F218 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07650A442C38C50000A2F218 /* ContentView.swift */; };
 		07650A472C38C50100A2F218 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07650A462C38C50100A2F218 /* Assets.xcassets */; };
 		07650A4A2C38C50100A2F218 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07650A492C38C50100A2F218 /* Preview Assets.xcassets */; };
+		07650A532C38DD4600A2F218 /* Distance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07650A522C38DD4600A2F218 /* Distance.swift */; };
+		07650A552C38E16E00A2F218 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07650A542C38E16E00A2F218 /* Time.swift */; };
+		07650A572C38E32100A2F218 /* Volume.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07650A562C38E32100A2F218 /* Volume.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +22,9 @@
 		07650A442C38C50000A2F218 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		07650A462C38C50100A2F218 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		07650A492C38C50100A2F218 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		07650A522C38DD4600A2F218 /* Distance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Distance.swift; sourceTree = "<group>"; };
+		07650A542C38E16E00A2F218 /* Time.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
+		07650A562C38E32100A2F218 /* Volume.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Volume.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,7 +58,10 @@
 			isa = PBXGroup;
 			children = (
 				07650A422C38C50000A2F218 /* Units_onTheGoApp.swift */,
+				07650A522C38DD4600A2F218 /* Distance.swift */,
 				07650A442C38C50000A2F218 /* ContentView.swift */,
+				07650A562C38E32100A2F218 /* Volume.swift */,
+				07650A542C38E16E00A2F218 /* Time.swift */,
 				07650A462C38C50100A2F218 /* Assets.xcassets */,
 				07650A482C38C50100A2F218 /* Preview Content */,
 			);
@@ -137,6 +146,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07650A572C38E32100A2F218 /* Volume.swift in Sources */,
+				07650A552C38E16E00A2F218 /* Time.swift in Sources */,
+				07650A532C38DD4600A2F218 /* Distance.swift in Sources */,
 				07650A452C38C50000A2F218 /* ContentView.swift in Sources */,
 				07650A432C38C50000A2F218 /* Units_onTheGoApp.swift in Sources */,
 			);
